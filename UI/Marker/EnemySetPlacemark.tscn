@@ -13,7 +13,7 @@ border_width_bottom = 4
 border_color = Color( 1, 0.333333, 0.333333, 1 )
 
 [node name="EnemySetPlacemark" instance=ExtResource( 2 )]
-custom_styles/panel = SubResource( 1 )
+theme_override_styles/panel = SubResource( 1 )
 script = ExtResource( 1 )
 enemy_placemark_packed_scene = ExtResource( 3 )
 enemy_set = null

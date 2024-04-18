@@ -1,4 +1,4 @@
-extends WindowDialog
+extends Window
 
 func _on_SettingsWindowDialog_about_to_show():
 	$VBoxContainer/RPCGridContainer/RPCHostLineEdit.text = StorageProvider.get_value(RpcClient.STORAGE_SECTION_RPC, RpcClient.STORAGE_KEY_RPC_HOST, RpcClient.STORAGE_KEY_RPC_HOST_DEFAULT)

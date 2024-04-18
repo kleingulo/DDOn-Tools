@@ -3,7 +3,7 @@ class_name PlayerMarker
 
 var player : PlayerMapEntity
 
-func set_player(var p_player : PlayerMapEntity):
+func set_player(p_player : PlayerMapEntity):
 	player = p_player
 	set_pos_vec(player.get_map_position())
 	

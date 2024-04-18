@@ -1,6 +1,6 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=2 format=3 uid="uid://dj640liodf0os"]
 
-[sub_resource type="GDScript" id=1]
+[sub_resource type="GDScript" id="1"]
 script/source = "extends Node
 
 const STORAGE_FILE := \"user://config.ini\"
@@ -18,9 +18,9 @@ func _ready():
 		printerr(\"Failed to load config file\", STORAGE_FILE, err)
 
 func _init_settings():
-	_config.set_value()
+	_config.set_value(\"null\", \"null\", null)
 
-func get_value(section: String, key: String, default = null):
+func get_value(section: String, key: String, default = \"\"):
 	return _config.get_value(section, key, default)
 	
 func set_value(section: String, key: String, value):
@@ -31,4 +31,4 @@ func set_value(section: String, key: String, value):
 "
 
 [node name="StorageProvider" type="Node"]
-script = SubResource( 1 )
+script = SubResource("1")

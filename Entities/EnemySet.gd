@@ -1,10 +1,10 @@
 extends Resource
 class_name EnemySet
 
-export var stage_id: int setget _set_stage_id
-export var layer_no: int setget _set_layer_no
-export var group_id: int setget _set_group_id
-export var subgroup_id: int setget _set_subgroup_id
+@export var stage_id: int: set = _set_stage_id
+@export var layer_no: int: set = _set_layer_no
+@export var group_id: int: set = _set_group_id
+@export var subgroup_id: int: set = _set_subgroup_id
 
 var _enemies: Array
 
@@ -23,7 +23,9 @@ func add_enemy(enemy: Enemy) -> void:
 	emit_changed()
 	
 func remove_enemy(index: int) -> void:
-	_enemies.remove(index)
+	#GD4 migration - Array remove() is now remove_at(), same functionality.
+	#_enemies.remove(index)
+	_enemies.remove_at(index)
 	emit_changed()
 	
 func clear_enemies() -> void:

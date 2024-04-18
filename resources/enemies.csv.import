@@ -1,3 +1,17 @@
 [remap]
 
-importer="keep"
+importer="csv_translation"
+type="Translation"
+uid="uid://clm1ja7ojru1h"
+
+[deps]
+
+files=["res://resources/enemies.name.translation", "res://resources/enemies.DefaultHmPresetNo.translation"]
+
+source_file="res://resources/enemies.csv"
+dest_files=["res://resources/enemies.name.translation", "res://resources/enemies.DefaultHmPresetNo.translation"]
+
+[params]
+
+compress=true
+delimiter=0

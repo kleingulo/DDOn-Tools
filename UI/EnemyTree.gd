@@ -1,7 +1,7 @@
 extends Tree
 class_name EnemyTree
 
-export (String, FILE, "*.csv") var enemyCSV := "res://resources/enemies.csv"
+@export var enemyCSV := "res://resources/enemies.csv"
 
 var enemy_cache: Array
 var initialized := false
@@ -14,8 +14,7 @@ func init_enemy_list():
 		return
 		
 	enemy_cache = []
-	var file := File.new()
-	file.open(enemyCSV, File.READ)
+	var file = FileAccess.open(enemyCSV, FileAccess.READ)
 	file.get_csv_line() # Ignore header line
 	while !file.eof_reached():
 		var csv_line := file.get_csv_line()
@@ -40,14 +39,16 @@ func _rebuild_list(filter_text: String = ""):
 			enemy_item.set_text(0, enemy.name)
 			enemy_item.set_metadata(0, enemy)
 	
-func get_drag_data(position):
-	var selected_enemy_type: EnemyType =  get_item_at_position(position).get_metadata(0)
+func _get_drag_data(pos):
+	var selected_enemy_type: EnemyType =  get_item_at_position(pos).get_metadata(0)
 	print_debug("Dragging %s" % [tr(selected_enemy_type.name)])
 	return selected_enemy_type
 
 func get_enemy_by_id(id: int) -> EnemyType:
 	# Also inefficient af
-	var child := get_root().get_children()
+	#GD4 migration - fetch only the first child and not the whole array as get_metadata does not work on arrays
+	#var child := get_root().get_children()
+	var child := get_root().get_children()[0]
 	while child != null:
 		var enemy := child.get_metadata(0) as EnemyType
 		if enemy.id == id:

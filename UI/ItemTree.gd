@@ -1,7 +1,7 @@
 extends Tree
 class_name ItemTree
 
-export (String, FILE, "*.csv") var itemsCSV := "res://resources/items.csv"
+@export var itemsCSV := "res://resources/items.csv"
 
 var items_cache: Array
 var initialized := false
@@ -14,8 +14,7 @@ func init_item_list():
 		return
 		
 	items_cache = []
-	var file := File.new()
-	file.open(itemsCSV, File.READ)
+	var file := FileAccess.open(itemsCSV, FileAccess.READ)
 	file.get_csv_line() # Ignore header line
 	while !file.eof_reached():
 		var csv_line := file.get_csv_line()
@@ -40,14 +39,16 @@ func _rebuild_list(filter_text: String = ""):
 			item_item.set_text(0, item.name)
 			item_item.set_metadata(0, item)
 
-func get_drag_data(position):
-	var selected_item: Item =  get_item_at_position(position).get_metadata(0)
+func _get_drag_data(pos):
+	var selected_item: Item =  get_item_at_position(pos).get_metadata(0)
 	print_debug("Dragging %s" % [tr(selected_item.name)])
 	return selected_item
 
 func get_item_by_id(id: int) -> Item:
 	# Also inefficient af
-	var child := get_root().get_children()
+	#GD4 migration
+	#var child := get_root().get_children()
+	var child := get_root().get_children()[0]
 	while child != null:
 		var item := child.get_metadata(0) as Item
 		if item.id == id:

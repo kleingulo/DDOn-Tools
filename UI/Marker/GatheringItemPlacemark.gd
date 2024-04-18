@@ -1,22 +1,22 @@
 extends GenericPlacemark
 class_name GatheringItemPlacemark
 
-export (Resource) var item: Resource setget set_item
+@export var item: Resource: set = set_item
 	
-onready var _detailsPanel: DetailsPanel = DetailsPanel.get_instance(get_tree())
+@onready var _detailsPanel: DetailsPanel = DetailsPanel.get_instance(get_tree())
 
 func _on_GatheringItemPlacemark_pressed():
 	# Left Click
 	_detailsPanel.show_details_of(item)
 
 func set_item(i: GatheringItem) -> void:
-	if item != null and item.is_connected("changed", self, "_on_item_changed"):
-		item.disconnect("changed", self, "_on_item_changed")
+	if item != null and item.is_connected("changed", Callable(self, "_on_item_changed")):
+		item.disconnect("changed", Callable(self, "_on_item_changed"))
 		
 	item = i
 	
 	if i != null:
-		i.connect("changed", self, "_on_item_changed")
+		i.connect("changed", Callable(self, "_on_item_changed"))
 		_on_item_changed()
 	
 func _on_item_changed():

@@ -6,20 +6,20 @@ const MAX_ENTRIES := 100 # TODO: Configurable
 const _META_LOG_ENTRY = "logentry"
 
 const _CHAT_TYPE_COLORS = {
-	"0": Color.white, # Say
-	"1": Color.purple, # Shout
-	"2": Color.crimson, # Tell
-	"3": Color.darkcyan, # System
-	"4": Color.aquamarine, # Party
-	"5": Color.purple, # ShoutAll, not sure about this one
-	"6": Color.lightgreen, # Group
-	"7": Color.limegreen, # Clan
-	"8": Color.aquamarine, # Entryboard TODO
-	"9": Color.darkcyan, # ManagementGuideC TODO
-	"10": Color.darkcyan, # ManagementGuideN TODO
-	"11": Color.darkcyan, # ManagementAlertC TODO
-	"12": Color.darkcyan, # ManagementAlertN TODO
-	"13": Color.darkgreen, # ClanNotice TODO
+	"0": Color.WHITE, # Say
+	"1": Color.PURPLE, # Shout
+	"2": Color.CRIMSON, # Tell
+	"3": Color.DARK_CYAN, # System
+	"4": Color.AQUAMARINE, # Party
+	"5": Color.PURPLE, # ShoutAll, not sure about this one
+	"6": Color.LIGHT_GREEN, # Group
+	"7": Color.LIME_GREEN, # Clan
+	"8": Color.AQUAMARINE, # Entryboard TODO
+	"9": Color.DARK_CYAN, # ManagementGuideC TODO
+	"10": Color.DARK_CYAN, # ManagementGuideN TODO
+	"11": Color.DARK_CYAN, # ManagementAlertC TODO
+	"12": Color.DARK_CYAN, # ManagementAlertN TODO
+	"13": Color.DARK_GREEN, # ClanNotice TODO
 }
 
 var _rpc_client := RpcClient.new()
@@ -30,12 +30,22 @@ func _ready():
 	_on_Chat_visibility_changed()
 	$ChatLogPanel/ChatLogScrollContainer.scroll_vertical = 99999
 
+#GD4 migration - get_system_time_msecs() is no more in GD4
+#https://forum.godotengine.org/t/why-was-getting-milliseconds-system-time-removed-in-godot-4-0/6381
+func get_system_time_msecs():
+	var unix_time: float = Time.get_unix_time_from_system()
+	var unix_time_int: int = int(unix_time)
+	var ms: int = int((unix_time - unix_time_int) * 1000.0)
+	return ms
+
+
 func _on_RPCTimer_timeout():
 	$RPCTimer.paused = true
-	var is_at_bottom = $ChatLogPanel/ChatLogScrollContainer.get_v_scrollbar().value+$ChatLogPanel/ChatLogScrollContainer.get_v_scrollbar().page == $ChatLogPanel/ChatLogScrollContainer.get_v_scrollbar().max_value
+	var is_at_bottom = $ChatLogPanel/ChatLogScrollContainer.get_v_scroll_bar().value+$ChatLogPanel/ChatLogScrollContainer.get_v_scroll_bar().page == $ChatLogPanel/ChatLogScrollContainer.get_v_scroll_bar().max_value
 	var iso_date := _last_request_iso_date
-	_last_request_iso_date = str(Time.get_datetime_string_from_system(true),".",OS.get_system_time_msecs(),"Z") # UTC date
-	var chatlog := _rpc_client.get_chat(iso_date)
+	_last_request_iso_date = str(Time.get_datetime_string_from_system(true),".",get_system_time_msecs(),"Z") # UTC date
+	#GD4 migration - get_chat() is a coroutine, so it must be called with "await"
+	var chatlog := await _rpc_client.get_chat(iso_date)
 	if chatlog.size() > 0:
 		print(chatlog.size(), " new chat messages")
 		for logentry in chatlog:

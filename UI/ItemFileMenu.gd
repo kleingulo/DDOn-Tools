@@ -17,7 +17,7 @@ const LEGACY_SCHEMA_INDEXES := {
 	"IsHidden": 7
 }
 
-const SCHEMA := PoolStringArray([
+const SCHEMA:PackedStringArray= [
 	"StageId",
 	"LayerNo",
 	"GroupId",
@@ -28,14 +28,14 @@ const SCHEMA := PoolStringArray([
 	"Quality",
 	"IsHidden",
 	"DropChance"
-])
+]
 
-export (NodePath) var item_tree: NodePath
+@export var item_tree: NodePath
 
-onready var item_tree_node: ItemTree = get_node(item_tree)
+@onready var item_tree_node: ItemTree = get_node(item_tree)
 
 func _ready():
-	._ready()
+	super._ready()
 	item_tree_node.init_item_list()
 
 func _get_file_path_from_storage() -> String:
@@ -47,7 +47,7 @@ func _set_file_path_in_storage() -> void:
 func _do_new_file() -> void:
 	SetProvider.clear_gathering_spots()
 	
-func _do_load_file(file: File) -> void:
+func _do_load_file(file: FileAccess) -> void:
 	# Check header
 	var header := file.get_csv_line()
 	var schema_indices: Dictionary
@@ -56,7 +56,7 @@ func _do_load_file(file: File) -> void:
 	else:
 		header[0] = header[0].trim_prefix("#")
 		schema_indices = {}
-		var result := find_schema_indices(header, SCHEMA, schema_indices)
+		var result := GenericFileMenu.find_schema_indices(header, SCHEMA, schema_indices)
 		if result != OK:
 			var err_message := "Invalid CSV file. Header doesn't have a valid format "
 			printerr(err_message, file.get_path(), " ", header)
@@ -83,14 +83,14 @@ func _do_load_file(file: File) -> void:
 		
 		var item := item_tree_node.get_item_by_id(int(csv_line[schema_indices["ItemId"]].strip_edges()))
 		if item == null:
-			push_error("Found gathering spot entry with an unrecognized item "+ String(csv_line))
+			push_error("Found gathering spot entry with an unrecognized item "+ str(csv_line))
 			continue
 			
 		var gathering_item := GatheringItem.new(item)
 		gathering_item.num = int(csv_line[schema_indices["ItemNum"]].strip_edges())
 		gathering_item.max_num = int(csv_line[schema_indices["MaxItemNum"]].strip_edges())
 		gathering_item.quality = int(csv_line[schema_indices["Quality"]].strip_edges())
-		gathering_item.is_hidden = parse_bool(csv_line[schema_indices["IsHidden"]].strip_edges())
+		gathering_item.is_hidden = GenericFileMenu.parse_bool(csv_line[schema_indices["IsHidden"]].strip_edges())
 		
 		# Optional for compatibility with older formats
 		if schema_indices.has("DropChance"):
@@ -100,7 +100,7 @@ func _do_load_file(file: File) -> void:
 		gathering_spot.add_item(gathering_item)
 	
 	
-func _do_save_file(file: File) -> void:
+func _do_save_file(file: FileAccess) -> void:
 	# Store header
 	file.store_string("#")
 	store_csv_line_crlf(file, SCHEMA)

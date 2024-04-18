@@ -3,8 +3,8 @@
 [ext_resource path="res://UI/Marker/GenericPlacemark.gd" type="Script" id=1]
 
 [node name="GenericPlacemark" type="Button"]
-margin_right = 40.0
-margin_bottom = 14.0
+offset_right = 40.0
+offset_bottom = 14.0
 mouse_filter = 1
 text = "Placeholder"
 flat = true

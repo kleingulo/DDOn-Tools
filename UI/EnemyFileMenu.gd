@@ -5,7 +5,7 @@ const STORAGE_SECTION_FILE_MENU = "FileMenu"
 const STORAGE_KEY_FILE_PATH := "file_path"
 
 const LEGACY_CSV_HEADER_STAGEID_COMPAT := "StageId"
-const LEGACY_CSV_HEADER := PoolStringArray([
+const LEGACY_CSV_HEADER:PackedStringArray = [
 	"#StageId",
 	"LayerNo",
 	"GroupId",
@@ -29,9 +29,9 @@ const LEGACY_CSV_HEADER := PoolStringArray([
 	"IsAreaBoss",
 	"IsBloodEnemy",
 	"IsHighOrbEnemy"
-])
+]
 
-const ENEMIES_SCHEMA := PoolStringArray([
+const ENEMIES_SCHEMA:PackedStringArray= [
 	"StageId",
 	"LayerNo",
 	"GroupId",
@@ -57,16 +57,16 @@ const ENEMIES_SCHEMA := PoolStringArray([
 	"HighOrbs",
 	"Experience",
 	"DropsTableId",
-])
+]
 
-const DROPS_TABLE_ITEMS_SCHEMA := PoolStringArray([
+const DROPS_TABLE_ITEMS_SCHEMA:PackedStringArray= [
 	"ItemId",
 	"ItemNum",
 	"MaxItemNum",
 	"Quality",
 	"IsHidden",
 	"DropChance"
-])
+]
 
 const JSON_KEY_SCHEMAS = "schemas"
 const JSON_KEY_ENEMIES = "enemies"
@@ -77,14 +77,14 @@ const JSON_KEY_NAME = "name"
 const JSON_KEY_MDL_TYPE = "mdlType"
 const JSON_KEY_ITEMS = "items"
 
-export (NodePath) var enemy_tree: NodePath
-export (NodePath) var item_tree: NodePath
+@export var enemy_tree: NodePath
+@export var item_tree: NodePath
 
-onready var enemy_tree_node: EnemyTree = get_node(enemy_tree)
-onready var item_tree_node: ItemTree = get_node(item_tree)
+@onready var enemy_tree_node: EnemyTree = get_node(enemy_tree)
+@onready var item_tree_node: ItemTree = get_node(item_tree)
 	
 func _ready():
-	._ready()
+	super._ready()
 	enemy_tree_node.init_enemy_list()
 	item_tree_node.init_item_list()
 	
@@ -100,7 +100,7 @@ func _do_new_file() -> void:
 	SetProvider.clear_enemy_sets()
 
 
-func _do_load_file(file: File) -> void:
+func _do_load_file(file: FileAccess) -> void:
 	if file.get_path().get_extension() == "csv":
 		_do_load_file_legacy(file)
 		return
@@ -110,9 +110,11 @@ func _do_load_file(file: File) -> void:
 			print("[_do_load_file] Error loading JSON file '" + str(file.get_path()) + "'.")
 			print("\tError: ", result)
 		
-func _do_load_file_json(file: File) -> int:
+func _do_load_file_json(file: FileAccess) -> int:
 	# Read file contents
-	var json_parse = JSON.parse(file.get_as_text())
+	var test_json_conv = JSON.new()
+	test_json_conv.parse(file.get_as_text())
+	var json_parse = test_json_conv.get_data()
 	if json_parse.error != OK:
 		print("[load_json_file] Error loading JSON file '" + str(file.get_path()) + "'.")
 		print("\tError: ", json_parse.error)
@@ -126,7 +128,8 @@ func _do_load_file_json(file: File) -> int:
 
 	# Load loot tables
 	var drops_table_schema_idx = {}
-	var result := find_schema_indices(json_parse.result[JSON_KEY_SCHEMAS][JSON_KEY_DROPS_TABLES+"."+JSON_KEY_ITEMS], DROPS_TABLE_ITEMS_SCHEMA, drops_table_schema_idx) 
+	#GD4 migration - The function "find_schema_indices()" is a static function but was called from an instance. Instead, it should be directly called from the type: "MenuButton.find_schema_indices()".
+	var result := EnemyFileMenu.find_schema_indices(json_parse.result[JSON_KEY_SCHEMAS][JSON_KEY_DROPS_TABLES+"."+JSON_KEY_ITEMS], DROPS_TABLE_ITEMS_SCHEMA, drops_table_schema_idx) 
 	if result != OK:
 		var err_message := "Invalid file. Loot table schema doesn't have a valid format "
 		printerr(err_message, file.get_path(), " ", json_parse.result[JSON_KEY_SCHEMAS][JSON_KEY_DROPS_TABLES+"."+JSON_KEY_ITEMS])
@@ -161,7 +164,8 @@ func _do_load_file_json(file: File) -> int:
 
 	# Load enemy sets
 	var enemies_schema_idx = {}
-	result = find_schema_indices(json_parse.result[JSON_KEY_SCHEMAS][JSON_KEY_ENEMIES], ENEMIES_SCHEMA, enemies_schema_idx) 
+	#GD4 migration - The function "find_schema_indices()" is a static function but was called from an instance. Instead, it should be directly called from the type: "MenuButton.find_schema_indices()".
+	result = EnemyFileMenu.find_schema_indices(json_parse.result[JSON_KEY_SCHEMAS][JSON_KEY_ENEMIES], ENEMIES_SCHEMA, enemies_schema_idx) 
 	if result != OK:
 		var err_message := "Invalid file. Enemy set schema doesn't have a valid format "
 		printerr(err_message, file.get_path(), " ", json_parse.result[JSON_KEY_SCHEMAS][JSON_KEY_ENEMIES])
@@ -210,7 +214,7 @@ func _do_load_file_json(file: File) -> int:
 		
 	return OK
 
-func _do_load_file_legacy(file: File) -> void:
+func _do_load_file_legacy(file: FileAccess) -> void:
 	# Check header
 	var header := file.get_csv_line()
 	for i in min(header.size(), LEGACY_CSV_HEADER.size()):
@@ -256,17 +260,18 @@ func _do_load_file_legacy(file: File) -> void:
 		enemy.montage_fix_no = int(csv_line[14].strip_edges())
 		enemy.set_type = int(csv_line[15].strip_edges())
 		enemy.infection_type = int(csv_line[16].strip_edges())
-		enemy.is_boss_gauge = parse_bool(csv_line[17].strip_edges())
-		enemy.is_boss_bgm = parse_bool(csv_line[18].strip_edges())
-		enemy.is_manual_set = parse_bool(csv_line[19].strip_edges())
-		enemy.is_area_boss = parse_bool(csv_line[20].strip_edges())
-		enemy.is_blood_enemy = parse_bool(csv_line[21].strip_edges())
-		enemy.is_highorb_enemy = parse_bool(csv_line[22].strip_edges())
+		#GD4 migration - The function "parse_bool()" is a static function but was called from an instance. Instead, it should be directly called from the type: "MenuButton.parse_bool()".
+		enemy.is_boss_gauge = EnemyFileMenu.parse_bool(csv_line[17].strip_edges())
+		enemy.is_boss_bgm = EnemyFileMenu.parse_bool(csv_line[18].strip_edges())
+		enemy.is_manual_set = EnemyFileMenu.parse_bool(csv_line[19].strip_edges())
+		enemy.is_area_boss = EnemyFileMenu.parse_bool(csv_line[20].strip_edges())
+		enemy.is_blood_enemy = EnemyFileMenu.parse_bool(csv_line[21].strip_edges())
+		enemy.is_highorb_enemy = EnemyFileMenu.parse_bool(csv_line[22].strip_edges())
 		
 		var enemy_set = SetProvider.get_enemy_set(stage_id, layer_no, group_id, subgroup_id)
 		enemy_set.add_enemy(enemy)
 	
-func _do_save_file(file: File) -> void:
+func _do_save_file(file: FileAccess) -> void:
 	if file.get_path().get_extension() == "csv":
 		_do_save_file_legacy(file)
 		return
@@ -299,13 +304,15 @@ func _do_save_file(file: File) -> void:
 			json_data_table[JSON_KEY_ITEMS].append(json_data_table_item)
 		json_data[JSON_KEY_DROPS_TABLES].append(json_data_table)
 
-	for set in SetProvider.get_all_enemy_sets():
-		for enemy in set.get_enemies():
+	#GD4 migration - The local "for" iterator variable "set" is shadowing an already-declared method at the base class "Object".
+	#renamed set to dataset
+	for dataset in SetProvider.get_all_enemy_sets():
+		for enemy in dataset.get_enemies():
 			var data = []
-			data.append(set.stage_id)
-			data.append(set.layer_no)
-			data.append(set.group_id)
-			data.append(set.subgroup_id)
+			data.append(dataset.stage_id)
+			data.append(dataset.layer_no)
+			data.append(dataset.group_id)
+			data.append(dataset.subgroup_id)
 			data.append("0x%06X" % enemy.enemy_type.id)
 			data.append(enemy.named_enemy_params_id)
 			data.append(enemy.raid_boss_id)
@@ -343,18 +350,20 @@ func _do_save_file(file: File) -> void:
 
 			json_data[JSON_KEY_ENEMIES].append(data)
 
-	file.store_string(JSON.print(json_data, "\t"))
+	file.store_string(JSON.stringify(json_data, "\t"))
 
 
 func _do_save_file_legacy(file) -> void:
 	store_csv_line_crlf(file, LEGACY_CSV_HEADER)
-	for set in SetProvider.get_all_enemy_sets():
-		for enemy in set.get_enemies():
+	#GD4 migration - The local "for" iterator variable "set" is shadowing an already-declared method at the base class "Object".
+	#renamed set to dataset
+	for dataset in SetProvider.get_all_enemy_sets():
+		for enemy in dataset.get_enemies():
 			var data := []
-			data.append(set.stage_id)
-			data.append(set.layer_no)
-			data.append(set.group_id)
-			data.append(set.subgroup_id)
+			data.append(dataset.stage_id)
+			data.append(dataset.layer_no)
+			data.append(dataset.group_id)
+			data.append(dataset.subgroup_id)
 			data.append("0x%06X" % enemy.enemy_type.id)
 			data.append("0x%X" % enemy.named_enemy_params_id)
 			data.append(enemy.raid_boss_id)

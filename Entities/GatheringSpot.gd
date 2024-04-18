@@ -1,9 +1,9 @@
 extends Resource
 class_name GatheringSpot
 
-export var stage_id: int setget _set_stage_id
-export var group_id: int setget _set_group_id
-export var subgroup_id: int setget _set_subgroup_id
+@export var stage_id: int: set = _set_stage_id
+@export var group_id: int: set = _set_group_id
+@export var subgroup_id: int: set = _set_subgroup_id
 
 var _gathering_items: Array
 
@@ -21,7 +21,8 @@ func add_item(item: GatheringItem) -> void:
 	emit_changed()
 	
 func remove_item(index: int) -> void:
-	_gathering_items.remove(index)
+	#GD4 migration - remove() was replaced by remove_at()
+	_gathering_items.remove_at(index)
 	emit_changed()
 	
 func clear_gathering_items() -> void:

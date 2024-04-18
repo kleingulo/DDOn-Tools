@@ -13,7 +13,7 @@ border_width_bottom = 4
 border_color = Color( 0.333333, 1, 0.333333, 1 )
 
 [node name="GatheringSpotPlacemark" instance=ExtResource( 1 )]
-custom_styles/panel = SubResource( 1 )
+theme_override_styles/panel = SubResource( 1 )
 script = ExtResource( 2 )
 item_placemark_packed_scene = ExtResource( 3 )
 gathering_spot = null

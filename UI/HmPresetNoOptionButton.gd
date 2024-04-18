@@ -1,16 +1,8 @@
-extends OptionButton
+extends OptionButtonCSV
 class_name HmPresetNoOptionButton
 
-const TRANSLATION_KEY_FORMAT = "HM_PRESET_NO_%s"
-
-export (String, FILE, "*.csv") var named_param_csv := "res://resources/HmPresetNo.csv"
 
 func _ready():
-	var file := File.new()
-	file.open(named_param_csv, File.READ)
-	file.get_csv_line() # Ignore header line
-	while !file.eof_reached():
-		var csv_line := file.get_csv_line()
-		if csv_line.size() >= 2:
-			add_item(tr(TRANSLATION_KEY_FORMAT % csv_line[0]), int(csv_line[0]))
-	file.close()
+	#GD4 migration - reduce redudant code
+	read_CSV("HM_PRESET_NO_%s", "res://resources/HmPresetNo.csv")
+

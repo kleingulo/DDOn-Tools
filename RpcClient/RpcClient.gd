@@ -1,4 +1,4 @@
-extends Reference
+extends RefCounted
 
 class_name RpcClient
 
@@ -23,13 +23,16 @@ func _ready():
 	pass
 
 func get_info() -> Array:
-	return _get_array(RPC_PATH_INFO)
+	#GD4 migration _get_array() is a coroutine, so it must be called with "await"
+	return await _get_array(RPC_PATH_INFO)
 	
 func get_chat(since_iso_date: String = "") -> Array:
 	if since_iso_date == "":
-		return _get_array(RPC_PATH_CHAT)
+		#GD4 migration _get_array() is a coroutine, so it must be called with "await"
+		return await _get_array(RPC_PATH_CHAT)
 	else:
-		return _get_array(RPC_PATH_CHAT, {"since": since_iso_date})
+		#GD4 migration _get_array() is a coroutine, so it must be called with "await"
+		return await _get_array(RPC_PATH_CHAT, {"since": since_iso_date})
 		
 func post_chat(chat_message_log_entry: Dictionary) -> void:
 	_post_dictionary(RPC_PATH_CHAT, chat_message_log_entry)
@@ -39,7 +42,9 @@ func _get_array(relative_path: String, query_params: Dictionary = {}) -> Array:
 	var port = StorageProvider.get_value(STORAGE_SECTION_RPC, STORAGE_KEY_RPC_PORT, STORAGE_KEY_RPC_PORT_DEFAULT)
 	var base_path = StorageProvider.get_value(STORAGE_SECTION_RPC, STORAGE_KEY_RPC_PATH, STORAGE_KEY_RPC_PATH_DEFAULT)
 	var path = str(base_path, relative_path)
-	var res = make_request(HTTPClient.METHOD_GET, host, port, path, query_params)
+	#GD4 migration - as this is a coroutine it must be called with await
+	#var res = make_request(HTTPClient.METHOD_GET, host, port, path, query_params)
+	var res = await make_request(HTTPClient.METHOD_GET, host, port, path, query_params)
 	if typeof(res) != TYPE_ARRAY:
 		print("RpcClient: expected Json Array") 
 		# {} = Dictionary 
@@ -52,7 +57,9 @@ func _post_dictionary(relative_path: String, body: Dictionary) -> void:
 	var port = StorageProvider.get_value(STORAGE_SECTION_RPC, STORAGE_KEY_RPC_PORT, STORAGE_KEY_RPC_PORT_DEFAULT)
 	var base_path = StorageProvider.get_value(STORAGE_SECTION_RPC, STORAGE_KEY_RPC_PATH, STORAGE_KEY_RPC_PATH_DEFAULT)
 	var path = str(base_path, relative_path)
-	var res = make_request(HTTPClient.METHOD_POST, host, port, path, {}, JSON.print(body))
+	#GD4 migration - as this is a coroutine it must be called with await
+	#var res = make_request(HTTPClient.METHOD_POST, host, port, path, {}, JSON.stringify(body))
+	await make_request(HTTPClient.METHOD_POST, host, port, path, {}, JSON.stringify(body))
 
 func make_request(method: int, host: String, port: int = 80, path: String = '/', query_params: Dictionary = {}, body: String = ""):
 	var err = 0
@@ -71,7 +78,7 @@ func make_request(method: int, host: String, port: int = 80, path: String = '/',
 		#print("status %s" % [http.get_status()])
 		http.poll()
 		if OS.has_feature("web"):
-			yield(Engine.get_main_loop(), "idle_frame")
+			await Engine.get_main_loop().idle_frame
 		else:
 			OS.delay_msec(HTTP_DELAY_MS)
 		try_count = try_count + 1
@@ -97,7 +104,7 @@ func make_request(method: int, host: String, port: int = 80, path: String = '/',
 	while http.get_status() == HTTPClient.STATUS_REQUESTING:
 		http.poll()
 		if OS.has_feature("web"):
-			yield(Engine.get_main_loop(), "idle_frame")
+			await Engine.get_main_loop().idle_frame
 		else:
 			OS.delay_msec(HTTP_DELAY_MS)
 		try_count = try_count + 1
@@ -119,13 +126,13 @@ func make_request(method: int, host: String, port: int = 80, path: String = '/',
 		return
 		
 	try_count = 0
-	var rb = PoolByteArray()
+	var rb = PackedByteArray()
 	while http.get_status() == HTTPClient.STATUS_BODY:
 		http.poll()
 		var chunk = http.read_response_body_chunk()
 		if chunk.size() == 0:
 			if OS.has_feature("web"):
-				yield(Engine.get_main_loop(), "idle_frame")
+				await Engine.get_main_loop().idle_frame
 			else:
 				OS.delay_usec(HTTP_DELAY_MS)
 			try_count = try_count + 1
@@ -139,7 +146,9 @@ func make_request(method: int, host: String, port: int = 80, path: String = '/',
 	if response_body == '':
 		return {}
 		
-	var json = JSON.parse(response_body)
+	var test_json_conv = JSON.new()
+	test_json_conv.parse(response_body)
+	var json = test_json_conv.get_data()
 	if json.error != OK:
 		printerr("RpcClient: failed to parse json ", host,":",port, path,"?",query_string,"\n\t",response_body) 
 		return

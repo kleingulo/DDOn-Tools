@@ -3,8 +3,8 @@ class_name Item
 
 const TRANSLATION_KEY_FORMAT = "ITEM_NAME_%d"
 
-export var id: int
-export var name: String setget , _get_name
+@export var id: int
+@export var name: String: get = _get_name
 
 func _init(_id: int):
 	self.id = _id

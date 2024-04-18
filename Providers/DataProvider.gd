@@ -1,9 +1,9 @@
 extends Node
 
-export (String, FILE, "*.json") var stage_map_json := "res://resources/StageMap.json"
-export (String, FILE, "*.json") var stage_list_json := "res://resources/StageList.json"
-export (String, FILE, "*.json") var repo_json := "res://resources/repo.json"
-export (String, FILE, "*.json") var gathering_spots_json := "res://resources/gatheringSpots.json"
+@export var stage_map_json := "res://resources/StageMap.json"
+@export var stage_list_json := "res://resources/StageList.json"
+@export var repo_json := "res://resources/repo.json"
+@export var gathering_spots_json := "res://resources/gatheringSpots.json"
 
 var stage_map: Array
 var stage_list: Array

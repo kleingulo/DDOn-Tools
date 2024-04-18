@@ -1,6 +1,6 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=2 format=3 uid="uid://cpfev38m0rw51"]
 
-[sub_resource type="GDScript" id=1]
+[sub_resource type="GDScript" id="1"]
 script/source = "extends Node
 
 signal drops_tables_updated()
@@ -18,7 +18,10 @@ func remove_drops_table(drops_table_id: int) -> DropsTable:
 	for idx in _drops_tables.size():
 		var table: DropsTable = _drops_tables[idx]
 		if table.id == drops_table_id:
-			_drops_tables.remove(idx)
+			#GD4 migration -
+			#Array remove() is now remove_at(), same functionality.
+			#_drops_tables.remove(idx)
+			_drops_tables.remove_at(idx)
 			emit_signal(\"drops_tables_updated\")
 			return table
 	return null
@@ -38,18 +41,22 @@ func get_all_drops_tables() -> Array:
 
 
 func clear_enemy_sets() -> void:
-	for set in _enemy_sets:
-		set.clear_enemies()
+	#GD4 migration - The local \"for\" iterator variable \"set\" is shadowing an already-declared method at the base class \"Object\".
+	#renamed set to dataset
+	for dataset in _enemy_sets:
+		dataset.clear_enemies()
 
 func get_enemy_set(stage_id: int, layer_no: int, group_id: int, subgroup_id: int) -> EnemySet:
 	# Inefficient af
-	for set in _enemy_sets:
-		if set.stage_id == stage_id and set.layer_no == layer_no and set.group_id == group_id and set.subgroup_id == subgroup_id:
-			return set
+	#GD4 migration - The local \"for\" iterator variable \"set\" is shadowing an already-declared method at the base class \"Object\".
+	#renamed set to dataset
+	for dataset in _enemy_sets:
+		if dataset.stage_id == stage_id and dataset.layer_no == layer_no and dataset.group_id == group_id and dataset.subgroup_id == subgroup_id:
+			return dataset
 	
-	var set := EnemySet.new(stage_id, layer_no, group_id, subgroup_id)
-	_enemy_sets.append(set)
-	return set
+	var dataset := EnemySet.new(stage_id, layer_no, group_id, subgroup_id)
+	_enemy_sets.append(dataset)
+	return dataset
 
 func get_all_enemy_sets() -> Array:
 	return Array(_enemy_sets)
@@ -61,17 +68,19 @@ func clear_gathering_spots() -> void:
 
 func get_gathering_spot(stage_id: int, group_id: int, subgroup_id: int) -> GatheringSpot:
 	# Inefficient af
-	for set in _gathering_spots:
-		if set.stage_id == stage_id and set.group_id == group_id and set.subgroup_id == subgroup_id:
-			return set
+	#GD4 migration - The local \"for\" iterator variable \"set\" is shadowing an already-declared method at the base class \"Object\".
+	#renamed set to dataset
+	for dataset in _gathering_spots:
+		if dataset.stage_id == stage_id and dataset.group_id == group_id and dataset.subgroup_id == subgroup_id:
+			return dataset
 	
-	var set := GatheringSpot.new(stage_id, group_id, subgroup_id)
-	_gathering_spots.append(set)
-	return set
+	var dataset := GatheringSpot.new(stage_id, group_id, subgroup_id)
+	_gathering_spots.append(dataset)
+	return dataset
 
 func get_all_gathering_spots() -> Array:
 	return Array(_gathering_spots)
 "
 
 [node name="SetProvider" type="Node"]
-script = SubResource( 1 )
+script = SubResource("1")

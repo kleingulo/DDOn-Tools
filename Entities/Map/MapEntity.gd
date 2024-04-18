@@ -16,12 +16,13 @@ const FIELD_TRANSFORMS := {
 var pos: Vector3
 var StageNo : int
 
-func _init(var p_pos: Vector3, p_stage_no: int):
+func _init(p_pos: Vector3, p_stage_no: int):
 	pos = p_pos
 	StageNo = p_stage_no
 
 func get_map_position() -> Vector2:
-	return _get_transform_for_stage_no(StageNo).xform(Vector2(self.pos.x, self.pos.z))
+	#GD4 migration - The function "_get_transform_for_stage_no()" is a static function but was called from an instance. Instead, it should be directly called from the type: "Resource._get_transform_for_stage_no()".
+	return MapEntity._get_transform_for_stage_no(StageNo) * (Vector2(self.pos.x, self.pos.z))
 
 static func _get_transform_for_stage_no(stage_no: int) -> Transform2D:
-	 return FIELD_TRANSFORMS.get(DataProvider.stage_no_to_belonging_field_id(stage_no), STAGE_TRANSFORM)
+	return FIELD_TRANSFORMS.get(DataProvider.stage_no_to_belonging_field_id(stage_no), STAGE_TRANSFORM)

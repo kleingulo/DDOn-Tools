@@ -7,14 +7,15 @@ const image_array_jorobate_flanders := ["res://resources/maps/field000_m00_l0.pn
 const EnemySetPlacemarkScene = preload("res://UI/Marker/EnemySetPlacemark.tscn")
 const GatheringSpotPlacemarkScene = preload("res://UI/Marker/GatheringSpotPlacemark.tscn")
 
-onready var camera: Camera2D = $camera
-onready var camera_tween: Tween = $CameraTween
-onready var map_layers: Node2D = $MapCoordinateSpace/MapLayers
-onready var enemy_sets_node: Node2D = $MapCoordinateSpace/EnemySetMarkers
-onready var gathering_spots_node: Node2D = $MapCoordinateSpace/GatheringSpotMarkers
-onready var players_node: Node2D = $MapCoordinateSpace/PlayerMarkers
+@onready var camera: Camera2D = $camera
+#GD4 migration - Tweens are not nodes anymore! These are references, similar to timers you create with the scene tree.
+#@onready var camera_tween: Tween = $CameraTween
+@onready var map_layers: Node2D = $MapCoordinateSpace/MapLayers
+@onready var enemy_sets_node: Node2D = $MapCoordinateSpace/EnemySetMarkers
+@onready var gathering_spots_node: Node2D = $MapCoordinateSpace/GatheringSpotMarkers
+@onready var players_node: Node2D = $MapCoordinateSpace/PlayerMarkers
 
-onready var tab_and_map_node = [
+@onready var tab_and_map_node = [
 	null,
 	enemy_sets_node,
 	gathering_spots_node,
@@ -61,13 +62,16 @@ func _add_field_maps(field_id: int) -> void:
 		_do_add_field_maps(field_id, 1, 1)
 		
 func _do_add_field_maps(field_id: int, m: int, l: int) -> bool:
-	var stage_map_resource := "res://resources/maps/field00"+String(field_id)+"_m0"+String(m)+"_l"+String(l)+".png"
+	#GD4 migration
+	#Error: No constructor of "String" matches the signature "String(int)"
+	#Solution: replace "String" with "str" or use a "format string"
+	var stage_map_resource := "res://resources/maps/field00"+str(field_id)+"_m0"+str(m)+"_l"+str(l)+".png"
 	var resource := _load_map_resource(stage_map_resource)
 	if resource == null:
 		printerr("Couldn't find a map for this field (Field ID %s)" % [field_id])
 		return false
 	else:
-		var map_sprite := Sprite.new()
+		var map_sprite := Sprite2D.new()
 		map_sprite.texture = load(stage_map_resource)
 		map_sprite.centered = false
 		map_layers.get_child(l).add_child(map_sprite)
@@ -83,12 +87,12 @@ func _add_stage_maps(stage_no: int) -> void:
 			var layer := map_layers.get_child(layer_index)
 			for param in stage_map["ParamList"]:
 				# TODO: Load all layers and have a control to switch between them
-				var stage_map_resource := "res://resources/maps/"+String(param["ModelName"])+"_l"+String(layer_index)+".png"
+				var stage_map_resource := "res://resources/maps/"+str(param["ModelName"])+"_l"+str(layer_index)+".png"
 				var resource := _load_map_resource(stage_map_resource)
 				if resource == null:
 					print("Couldn't find the map ", stage_map_resource)
 				else:
-					var map_sprite := Sprite.new()
+					var map_sprite := Sprite2D.new()
 					map_sprite.texture = load(stage_map_resource)
 					map_sprite.centered = false
 					map_sprite.global_position = origin + Vector2(param["ConnectPos"]["x"], param["ConnectPos"]["z"])*0.028 # Eyeballed it, close enough
@@ -106,9 +110,9 @@ func _load_stage_markers(stage_no):
 			var group_no := int(ect_marker["GroupNo"])
 			var pos := Vector3(ect_marker["Pos"]["X"], ect_marker["Pos"]["Y"], ect_marker["Pos"]["Z"])
 			var map_entity = MapEntity.new(pos, int(stage_no))
-			var enemy_set_placemark: EnemySetPlacemark = EnemySetPlacemarkScene.instance()
+			var enemy_set_placemark: EnemySetPlacemark = EnemySetPlacemarkScene.instantiate()
 			enemy_set_placemark.enemy_set = SetProvider.get_enemy_set(stage_id, 0, group_no, 0)
-			enemy_set_placemark.rect_position = map_entity.get_map_position()
+			enemy_set_placemark.position = map_entity.get_map_position()
 			enemy_sets_node.add_child(enemy_set_placemark)
 			
 	# Build gathering spot markers for the new stage
@@ -118,14 +122,15 @@ func _load_stage_markers(stage_no):
 			var pos_id := int(gathering_spot["PosId"])
 			var pos := Vector3(gathering_spot["Position"]["x"], gathering_spot["Position"]["y"], gathering_spot["Position"]["z"])
 			var map_entity := MapEntity.new(pos, int(stage_no))
-			var gathering_spot_placemark: GatheringSpotPlacemark = GatheringSpotPlacemarkScene.instance()
+			var gathering_spot_placemark: GatheringSpotPlacemark = GatheringSpotPlacemarkScene.instantiate()
 			gathering_spot_placemark.gathering_spot = SetProvider.get_gathering_spot(stage_id, group_no, pos_id)
-			gathering_spot_placemark.rect_position = map_entity.get_map_position()
+			gathering_spot_placemark.position = map_entity.get_map_position()
 			gathering_spots_node.add_child(gathering_spot_placemark)
 
 
 func _load_map_resource(resource_path: String) -> Resource:
-	var _directory = Directory.new();
+	#GD4 migration - useless?
+	#var _directory = DirAccess.new();
 	if image_array_jorobate_flanders.has(resource_path):
 		return load(resource_path)
 	else:
@@ -148,12 +153,11 @@ func _clear_markers() -> void:
 
 func _on_ui_player_activated(player: PlayerMapEntity):
 	for stage_index in $ui/left/tab/Stages.get_item_count():
-		if $ui/left/tab/Stages.get_item_metadata(stage_index) == String(player.StageNo):
+		if $ui/left/tab/Stages.get_item_metadata(stage_index) == str(player.StageNo):
 			# TODO: Decouple, same as _ready
 			$ui/left/tab/Stages.select(stage_index)
 			$ui/left/tab/Stages.emit_signal("item_selected", stage_index)
 			# Move camera to player position
-			camera_tween.remove_all()
 			_move_camera_to(player.get_map_position())
 			return
 	printerr("Couldnt focus map on %s %s (StageNo: %s)" % [player.FirstName, player.LastName, player.StageNo])
@@ -176,6 +180,7 @@ func _update_layer_selector() -> void:
 func _focus_camera_on_center() -> void:
 	var new_position = null
 	if enemy_sets_node.get_child_count() > 0:
+		#GD4 migration - The function "_get_center()" is a static function but was called from an instance. Instead, it should be directly called from the type: "Control._get_center()".
 		new_position = _get_center(enemy_sets_node)
 	elif map_layers.get_child(0).get_child_count() > 0:
 		# TODO: Not depend on there being a layer 0
@@ -186,30 +191,32 @@ func _focus_camera_on_center() -> void:
 
 
 func _move_camera_to(new_position: Vector2) -> void:
-	camera_tween.interpolate_property(camera, "position",
-		camera.position, new_position, 0.5,
-		Tween.TRANS_SINE, Tween.EASE_IN_OUT)
-	camera_tween.start()
-
+	#GD4 migration - Tweens are not nodes anymore! These are references, similar to timers you create with the scene tree.
+	var camera_tween = get_tree().create_tween()
+	camera_tween.tween_property(camera, "position", new_position, 0.5)
+	return
 
 func _on_LayerOptionButton_item_selected(index):
 	for layer in map_layers.get_children():
 		layer.visible = false
 	map_layers.get_child(index).visible = true
 
-
-static func _get_center(parent: Node2D) -> Vector2:
+#GD4 migration - why static?
+#static func _get_center(parent: Node2D) -> Vector2:
+func _get_center(parent: Node2D) -> Vector2:
 	var min_x: int = 9223372036854775807
 	var max_x: int = -9223372036854775807
 	var min_y: int = 9223372036854775807
 	var max_y: int = -9223372036854775807
 	
 	for child in parent.get_children():
-		var position: Vector2 = child.get_rect().get_center()
-		min_x = min(min_x, position.x)
-		max_x = max(max_x, position.x)
-		min_y = min(min_y, position.y)
-		max_y = max(max_y, position.y)
+		#GD4 migration - position is shadowing
+		#var position: Vector2 = child.get_rect().get_center()
+		var current_pos: Vector2 = child.get_rect().get_center()
+		min_x = min(min_x, current_pos.x)
+		max_x = max(max_x, current_pos.x)
+		min_y = min(min_y, current_pos.y)
+		max_y = max(max_y, current_pos.y)
 		
 	return parent.to_global(Rect2(min_x, min_y, max_x-min_x, max_y-min_y).get_center())
 

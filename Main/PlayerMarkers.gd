@@ -3,13 +3,13 @@ class_name PlayerMarkers
 
 const PlayerMarkerScene = preload("res://UI/Marker/PlayerMarker.tscn")
 
-onready var ui_node := $"../../ui"
+@onready var ui_node := $"../../ui"
 
 func _on_Players_player_joined(player: PlayerMapEntity):
 	var node := _get_player_node(player)
 	if node == null:
-		node = PlayerMarkerScene.instance()
-		ui_node.connect("stage_selected", node, "_on_ui_stage_selected")
+		node = PlayerMarkerScene.instantiate()
+		ui_node.connect("stage_selected", Callable(node, "_on_ui_stage_selected"))
 		node.set_player(player)
 		add_child(node)
 
@@ -30,3 +30,15 @@ func _get_player_node(player: PlayerMapEntity) -> PlayerMarker:
 		if n.player.CharacterId == player.CharacterId:
 			return n
 	return null
+
+
+func _on_players_player_joined(player):
+	pass # Replace with function body.
+
+
+func _on_players_player_left(player):
+	pass # Replace with function body.
+
+
+func _on_players_player_updated(player):
+	pass # Replace with function body.

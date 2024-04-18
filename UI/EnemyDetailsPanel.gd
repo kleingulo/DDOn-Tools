@@ -1,24 +1,24 @@
 extends ScrollContainer
 class_name EnemyDetailsPanel
 
-const COLOR_BLOOD_ORB = Color.violet
-const COLOR_HIGH_ORB = Color.orangered
-const COLOR_DEFAULT = Color.white
+const COLOR_BLOOD_ORB = Color.VIOLET
+const COLOR_HIGH_ORB = Color.ORANGE_RED
+const COLOR_DEFAULT = Color.WHITE
 
-export (NodePath) var title_label: NodePath
+@export var title_label: NodePath
 
-var enemy: Enemy setget _set_enemy
+var enemy: Enemy: set = _set_enemy
 
-onready var title_label_node: Label = get_node_or_null(title_label)
+@onready var title_label_node: Label = get_node_or_null(title_label)
 
 func _set_enemy(em: Enemy) -> void:
-	if enemy != null and enemy.is_connected("changed", self, "_on_enemy_changed"):
-		enemy.disconnect("changed", self, "_on_enemy_changed")
+	if enemy != null and enemy.is_connected("changed", Callable(self, "_on_enemy_changed")):
+		enemy.disconnect("changed", Callable(self, "_on_enemy_changed"))
 	
 	enemy = em
 	
 	if em != null:
-		em.connect("changed", self, "_on_enemy_changed")
+		em.connect("changed", Callable(self, "_on_enemy_changed"))
 	
 	_on_enemy_changed()
 	
@@ -44,14 +44,14 @@ func _on_enemy_changed():
 		$VBoxContainer/GridContainer/MontageFixNoLineEdit.value = enemy_clone.montage_fix_no
 		$VBoxContainer/GridContainer/SetTypeLineEdit.value = enemy_clone.set_type
 		$VBoxContainer/GridContainer/InfectionTypeLineEdit.select($VBoxContainer/GridContainer/InfectionTypeLineEdit.get_item_index(enemy_clone.infection_type))
-		$VBoxContainer/GridContainer/IsBossGauge.pressed = enemy_clone.is_boss_gauge
-		$VBoxContainer/GridContainer/IsBossBGM.pressed = enemy_clone.is_boss_bgm
-		$VBoxContainer/GridContainer/IsManualSet.pressed = enemy_clone.is_manual_set
-		$VBoxContainer/GridContainer/IsAreaBoss.pressed = enemy_clone.is_area_boss
-		$VBoxContainer/GridContainer/BloodOrbsContainer/IsBloodEnemy.pressed = enemy_clone.is_blood_enemy
+		$VBoxContainer/GridContainer/IsBossGauge.button_pressed = enemy_clone.is_boss_gauge
+		$VBoxContainer/GridContainer/IsBossBGM.button_pressed = enemy_clone.is_boss_bgm
+		$VBoxContainer/GridContainer/IsManualSet.button_pressed = enemy_clone.is_manual_set
+		$VBoxContainer/GridContainer/IsAreaBoss.button_pressed = enemy_clone.is_area_boss
+		$VBoxContainer/GridContainer/BloodOrbsContainer/IsBloodEnemy.button_pressed = enemy_clone.is_blood_enemy
 		$VBoxContainer/GridContainer/BloodOrbsContainer/BloodOrbsSpinBox.editable = enemy_clone.is_blood_enemy
 		$VBoxContainer/GridContainer/BloodOrbsContainer/BloodOrbsSpinBox.value = enemy_clone.blood_orbs
-		$VBoxContainer/GridContainer/HighOrbsContainer/IsHighOrbEnemy.pressed = enemy_clone.is_highorb_enemy
+		$VBoxContainer/GridContainer/HighOrbsContainer/IsHighOrbEnemy.button_pressed = enemy_clone.is_highorb_enemy
 		$VBoxContainer/GridContainer/HighOrbsContainer/HighOrbsSpinBox.editable = enemy_clone.is_highorb_enemy
 		$VBoxContainer/GridContainer/HighOrbsContainer/HighOrbsSpinBox.value = enemy_clone.high_orbs
 		$VBoxContainer/ExpSpinBox.value = enemy_clone.experience

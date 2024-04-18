@@ -1,21 +1,21 @@
 extends MenuButton
 class_name GenericFileMenu
 
-export (NodePath) var file_dialog: NodePath
-export (NodePath) var notification_popup: NodePath
+@export var file_dialog: NodePath
+@export var notification_popup: NodePath
 
-var _file_path: String setget _set_file_path
+var _file_path: String: set = _set_file_path
 
-onready var notification_popup_node: NotificationPopup = get_node(notification_popup)
-onready var file_dialog_node: FileDialog = get_node(file_dialog)
+@onready var notification_popup_node: NotificationPopup = get_node(notification_popup)
+@onready var file_dialog_node: FileDialog = get_node(file_dialog)
 
 func _ready():
-	get_popup().connect("id_pressed", self, "_on_menu_id_pressed")
+	get_popup().connect("id_pressed", Callable(self, "_on_menu_id_pressed"))
 	
 	# Load last csv file on startup
 	var file_path = _get_file_path_from_storage()
 	if file_path != null and file_path != "":
-		yield(file_dialog_node, "ready")
+		await file_dialog_node.ready
 		load_file(file_path)
 		
 func _get_file_path_from_storage():
@@ -25,17 +25,17 @@ func _set_file_path_in_storage():
 	pass
 		
 func _unhandled_input(event: InputEvent):
-	if is_visible_in_tree() and Input.is_key_pressed(KEY_CONTROL) and event.is_pressed() and event is InputEventKey:
+	if is_visible_in_tree() and Input.is_key_pressed(KEY_CTRL) and event.is_pressed() and event is InputEventKey:
 		var inputEventKey := event as InputEventKey
-		if inputEventKey.scancode == KEY_N:
+		if inputEventKey.keycode == KEY_N:
 			new_file()
-			get_tree().set_input_as_handled()
-		elif inputEventKey.scancode == KEY_S:
+			get_viewport().set_input_as_handled()
+		elif inputEventKey.keycode == KEY_S:
 			resave()
-			get_tree().set_input_as_handled()
-		elif inputEventKey.scancode == KEY_L:
+			get_viewport().set_input_as_handled()
+		elif inputEventKey.keycode == KEY_L:
 			reload()
-			get_tree().set_input_as_handled()
+			get_viewport().set_input_as_handled()
 
 func _on_menu_id_pressed(id: int) -> void:
 	match id:
@@ -60,30 +60,31 @@ func _do_new_file():
 	pass
 	
 func _on_load():
-	file_dialog_node.mode = FileDialog.MODE_OPEN_FILE
+	file_dialog_node.file_mode = FileDialog.FILE_MODE_OPEN_FILE
 	file_dialog_node.popup()
-	yield(file_dialog_node, "file_selected")
+	await file_dialog_node.file_selected
 	load_file(file_dialog_node.current_path)
 	
 func load_file(file_path: String):
 	print_debug("Loading file ", file_path)
 	
-	var file := File.new()
+	var file = FileAccess.open(file_path, FileAccess.READ)
 	
-	if not file.file_exists(file_path):
+	#GD4 migration - The function "file_exists()" is a static function but was called from an instance. Instead, it should be directly called from the type: "FileAccess.file_exists()".
+	if not FileAccess.file_exists(file_path):
 		var err_message := "File doesn't exist"
 		printerr(err_message, file_path)
 		notification_popup_node.notify(err_message+": "+file_path)
 		return
 	
-	file.open(file_path, File.READ)
+
 	_do_load_file(file)
 	file.close()
 	
 	self._file_path = file_path
 	notification_popup_node.notify("Loaded file "+file_path)
 	
-func _do_load_file(file: File) -> void:
+func _do_load_file(file: FileAccess) -> void:
 	pass
 	
 func reload() -> bool:
@@ -98,23 +99,22 @@ func reload() -> bool:
 		
 	
 func _on_save():
-	file_dialog_node.mode = FileDialog.MODE_SAVE_FILE
+	file_dialog_node.file_mode = FileDialog.FILE_MODE_SAVE_FILE
 	file_dialog_node.popup()
-	var filename = yield(file_dialog_node, "file_selected")
+	var filename = await file_dialog_node.file_selected
 	save_file(filename)
 	
 func save_file(file_path: String):
 	print_debug("Saving file ", file_path)
-	var file := File.new()
+	var file := FileAccess.open(file_path, FileAccess.WRITE)
 	
-	file.open(file_path, File.WRITE)
 	_do_save_file(file)
 	file.close()
 	
 	self._file_path = file_path
 	notification_popup_node.notify("Saved file "+file_path)
 	
-func _do_save_file(file: File) -> void:
+func _do_save_file(file: FileAccess) -> void:
 	pass
 	
 func resave() -> bool:
@@ -134,12 +134,12 @@ func _set_file_path(file_path: String) -> void:
 	
 	# TODO: Move this somewhere else to handle the title via signals
 	if file_path == "":
-		OS.set_window_title("DDOn Tools")
+		get_window().set_title("DDOn Tools")
 	else:
-		OS.set_window_title("DDOn Tools - "+file_path)
+		get_window().set_title("DDOn Tools - "+file_path)
 		
 
-func store_csv_line_crlf(file: File, csv_data: Array):
+func store_csv_line_crlf(file: FileAccess, csv_data: Array):
 	file.store_csv_line(csv_data)
 	file.seek(file.get_position()-1)
 	#file.store_string("\r\n")

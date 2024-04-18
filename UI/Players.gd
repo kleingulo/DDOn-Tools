@@ -7,7 +7,7 @@ signal player_left(player)
 
 var rpc_client := RpcClient.new()
 
-onready var players_on_ui_root: TreeItem = create_item()
+@onready var players_on_ui_root: TreeItem = create_item()
 
 
 func _ready():
@@ -19,7 +19,8 @@ func _on_rpc_timer_timeout():
 
 
 func update_info():
-	var infos : Array = rpc_client.get_info()
+	#GD4 migration - get_info() is a coroutine, so it must be called with "await"
+	var infos : Array = await rpc_client.get_info()
 	var item = false
 	if get_root():
 		item = get_root().get_children()
