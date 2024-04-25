@@ -42,4 +42,4 @@ func _on_QualitySpinBox_value_changed(value):
 	item.quality = $GridContainer/QualitySpinBox.value
 
 func _on_IsHiddenCheckBox_pressed():
-	item.is_hidden = $GridContainer/IsHiddenCheckBox.pressed
+	item.is_hidden = $GridContainer/IsHiddenCheckBox.button_pressed

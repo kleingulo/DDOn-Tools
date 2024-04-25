@@ -229,3 +229,4 @@ func _on_tab_tab_changed(tab):
 				map_node.visible = true
 			else:
 				map_node.visible = false
+

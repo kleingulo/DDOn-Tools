@@ -111,22 +111,22 @@ func _on_InfectionTypeLineEdit_item_selected(index):
 	enemy.infection_type = $VBoxContainer/GridContainer/InfectionTypeLineEdit.get_item_id(index)
 
 func _on_IsBossGauge_pressed():
-	enemy.is_boss_gauge = $VBoxContainer/GridContainer/IsBossGauge.pressed
+	enemy.is_boss_gauge = $VBoxContainer/GridContainer/IsBossGauge.button_pressed
 
 func _on_IsBossBGM_pressed():
-	enemy.is_boss_bgm = $VBoxContainer/GridContainer/IsBossBGM.pressed
+	enemy.is_boss_bgm = $VBoxContainer/GridContainer/IsBossBGM.button_pressed
 
 func _on_IsManualSet_pressed():
-	enemy.is_manual_set = $VBoxContainer/GridContainer/IsManualSet.pressed
+	enemy.is_manual_set = $VBoxContainer/GridContainer/IsManualSet.button_pressed
 
 func _on_IsAreaBoss_pressed():
-	enemy.is_area_boss = $VBoxContainer/GridContainer/IsAreaBoss.pressed
+	enemy.is_area_boss = $VBoxContainer/GridContainer/IsAreaBoss.button_pressed
 
 func _on_IsBloodEnemy_pressed():
-	enemy.is_blood_enemy = $VBoxContainer/GridContainer/BloodOrbsContainer/IsBloodEnemy.pressed
+	enemy.is_blood_enemy = $VBoxContainer/GridContainer/BloodOrbsContainer/IsBloodEnemy.button_pressed
 
 func _on_IsHighOrbEnemy_pressed():
-	enemy.is_highorb_enemy = $VBoxContainer/GridContainer/HighOrbsContainer/IsHighOrbEnemy.pressed
+	enemy.is_highorb_enemy = $VBoxContainer/GridContainer/HighOrbsContainer/IsHighOrbEnemy.button_pressed
 
 func _on_BloodOrbsSpinBox_value_changed(value):
 	enemy.blood_orbs = int(value)

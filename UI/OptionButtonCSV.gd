@@ -3,7 +3,7 @@ class_name OptionButtonCSV
 
 
 func read_CSV(TRANSLATION_KEY_FORMAT, named_param_csv):
-	#GD4 migration - File wa replaced by FileAccess
+	#GD4 migration - File was replaced by FileAccess
 	#var file := File.new()
 	#file.open(named_param_csv, File.READ)
 	#file.get_csv_line() # Ignore header line

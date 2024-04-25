@@ -1,9 +1,9 @@
 ea4bc82a6ad023ab7ee23ee620429895
-::res://::1713477354
+::res://::1714073058
 Common.gd::GDScript::-1::1713128044::0::1::::Common<>RefCounted<>::
 export_presets.cfg::TextFile::-1::1712674927::0::1::::<><>::
-Main.gd::GDScript::-1::1713474554::0::1::::<>Control<>::
-Main.tscn::PackedScene::7134383642181263780::1713475118::0::1::::<><>::res://Main/PlayerMarkers.gd<>res://Main.gd<>res://UI/Camera.gd<>uid://c7qcqakji48gm::::res://UI/UI.tscn<>res://UI/ItemFileMenu.gd
+Main.gd::GDScript::-1::1714064931::0::1::::<>Control<>::
+Main.tscn::PackedScene::7134383642181263780::1714072518::0::1::::<><>::res://Main/PlayerMarkers.gd<>res://Main.gd<>res://UI/Camera.gd<>uid://c7qcqakji48gm::::res://UI/UI.tscn
 puala.png::CompressedTexture2D::7999863007585071320::1712674927::1712675032::1::::<><>::
 README.md::TextFile::-1::1712674927::0::1::::<><>::
 ::res://Entities/::1712858096
@@ -17,13 +17,13 @@ Item.gd::GDScript::-1::1712675000::0::1::::Item<>Resource<>::
 ::res://Entities/Map/::1713472259
 MapEntity.gd::GDScript::-1::1713472259::0::1::::MapEntity<>Resource<>::
 PlayerMapEntity.gd::GDScript::-1::1712675000::0::1::::PlayerMapEntity<>MapEntity<>::
-::res://Main/::1713472302
-PlayerMarkers.gd::GDScript::-1::1713472302::0::1::::PlayerMarkers<>Node2D<>::
-::res://Providers/::1713475109
+::res://Main/::1714064485
+PlayerMarkers.gd::GDScript::-1::1714064485::0::1::::PlayerMarkers<>Node2D<>::
+::res://Providers/::1714058477
 DataProvider.gd::GDScript::-1::1713388589::0::1::::<>Node<>::
-DataProvider.tscn::PackedScene::8882337191869571701::1713475109::0::1::::<><>::res://Providers/DataProvider.gd
-SetProvider.tscn::PackedScene::5836277802581733318::1713475109::0::1::::<><>::
-StorageProvider.tscn::PackedScene::7856763382590915306::1713475109::0::1::::<><>::
+DataProvider.tscn::PackedScene::8882337191869571701::1714058477::0::1::::<><>::res://Providers/DataProvider.gd
+SetProvider.tscn::PackedScene::5836277802581733318::1714058477::0::1::::<><>::
+StorageProvider.tscn::PackedScene::7856763382590915306::1714058477::0::1::::<><>::
 ::res://resources/::1713390407
 enemies.csv::Translation::5571285944492904227::1675975030::1713389929::1::::<><>::
 enemies.DefaultHmPresetNo.translation::OptimizedTranslation::2901837079152662072::1713389929::0::1::::<><>::
@@ -448,7 +448,7 @@ sfield005_m00_l0.png::CompressedTexture2D::3759795557352718648::1675975031::1712
 sfield007_m00_l0.png::CompressedTexture2D::1938604781402070176::1675975031::1712675029::1::::<><>::
 ::res://RpcClient/::1713463644
 RpcClient.gd::GDScript::-1::1713463644::0::1::::RpcClient<>RefCounted<>::
-::res://UI/::1713477234
+::res://UI/::1714072518
 Camera.gd::GDScript::-1::1713461226::0::1::::<>Camera2D<>::
 Chat.gd::GDScript::-1::1713473847::0::1::::Chat<>VBoxContainer<>::
 Chat.tscn::PackedScene::-1::1712674999::0::1::::<><>::res://UI/Chat.gd
@@ -457,26 +457,26 @@ DropItemPanel.gd::GDScript::-1::1712674999::0::1::::DropItemPanel<>VBoxContainer
 DropItemPanel.tscn::PackedScene::-1::1712674999::0::1::::<><>::res://UI/DropItemPanel.gd<>res://UI/UI Buttons/Minimize.gd
 DropsController.gd::GDScript::-1::1713473333::0::1::::DropsController<>VBoxContainer<>::
 DropTableItemsPanel.gd::GDScript::-1::1712674999::0::1::::DropsTableItemsPanel<>PanelContainer<>::
-EnemyDetailsPanel.gd::GDScript::-1::1712675240::0::1::::EnemyDetailsPanel<>ScrollContainer<>::
+EnemyDetailsPanel.gd::GDScript::-1::1714072313::0::1::::EnemyDetailsPanel<>ScrollContainer<>::
 EnemyDetailsPanel.tscn::PackedScene::7020508009544653768::1713196943::0::1::::<><>::res://UI/NamedEnemyParamsIdOptionButton.gd<>res://UI/HmPresetNoOptionButton.gd<>res://UI/EnemyDetailsPanel.gd<>res://UI/DropsController.gd<>res://UI/DropTableItemsPanel.gd
 EnemyFileMenu.gd::GDScript::-1::1713464197::0::1::::EnemyFileMenu<>GenericFileMenu<>::
 EnemyTree.gd::GDScript::-1::1713473429::0::1::::EnemyTree<>Tree<>::
 font.tres::FontFile::-1::1712674999::0::1::::<><>::res://resources/fonts/NotoSansJP-Regular.otf
 GenericFileMenu.gd::GDScript::-1::1713473376::0::1::::GenericFileMenu<>MenuButton<>::
-HmPresetNoOptionButton.gd::GDScript::-1::1713473249::0::1::::HmPresetNoOptionButton<>OptionButtonCSV<>::
-ItemDetailsPanel.gd::GDScript::-1::1712675240::0::1::::ItemDetailsPanel<>ScrollContainer<>::
+HmPresetNoOptionButton.gd::GDScript::-1::1714056222::0::1::::HmPresetNoOptionButton<>OptionButtonCSV<>::
+ItemDetailsPanel.gd::GDScript::-1::1714072273::0::1::::ItemDetailsPanel<>ScrollContainer<>::
 ItemDetailsPanel.tscn::PackedScene::-1::1712674999::0::1::::<><>::res://UI/ItemDetailsPanel.gd
 ItemFileMenu.gd::GDScript::-1::1713128388::0::1::::ItemFileMenu<>GenericFileMenu<>::
 ItemTree.gd::GDScript::-1::1713473436::0::1::::ItemTree<>Tree<>::
-LanguageOptionButton.gd::GDScript::-1::1712674999::0::1::::LanguageOptionButton<>OptionButton<>::
+LanguageOptionButton.gd::GDScript::-1::1714071034::0::1::::LanguageOptionButton<>OptionButton<>::
 NamedEnemyParamsIdOptionButton.gd::GDScript::-1::1713473231::0::1::::NamedEnemyParamsIdOptionButton<>OptionButtonCSV<>::
 NotificationPopup.gd::GDScript::-1::1712674999::0::1::::NotificationPopup<>PopupPanel<>::
-OptionButtonCSV.gd::GDScript::-1::1713473198::0::1::::OptionButtonCSV<>OptionButton<>::
+OptionButtonCSV.gd::GDScript::-1::1714056235::0::1::::OptionButtonCSV<>OptionButton<>::
 Players.gd::GDScript::-1::1713127035::0::1::::Players<>Tree<>::
 Settings.gd::GDScript::-1::1713196325::0::1::::<>Window<>::
-Settings.tscn::PackedScene::6156428928830142825::1713196943::0::1::::<><>::res://UI/LanguageOptionButton.gd<>res://UI/Settings.gd<>res://UI/font.tres
+Settings.tscn::PackedScene::6156428928830142825::1714071037::0::1::::<><>::res://UI/LanguageOptionButton.gd<>res://UI/Settings.gd<>res://UI/font.tres
 Stages.gd::GDScript::-1::1712674999::0::1::::StagesItemList<>ItemList<>::
-UI.tscn::PackedScene::7052064430425037924::1713464203::0::1::::<><>::uid://c7a10g3pejiuy::::res://UI/EnemyDetailsPanel.tscn<>res://UI/NotificationPopup.gd<>res://UI/DetailsPanel.gd<>res://UI/EnemyFileMenu.gd<>res://UI/UI Buttons/Minimize.gd<>res://UI/EnemyTree.gd<>res://UI/ItemDetailsPanel.tscn<>uid://ctyhqqwexg434::::res://UI/Settings.tscn<>res://UI/Chat.tscn<>res://UI/Stages.gd<>res://UI/Players.gd<>res://UI/ItemTree.gd<>res://UI/ItemFileMenu.gd<>uid://bbrlwa7er4uqs::::res://resources/icons/brightmixIconset search.png
+UI.tscn::PackedScene::7052064430425037924::1714072518::0::1::::<><>::uid://c7a10g3pejiuy::::res://UI/EnemyDetailsPanel.tscn<>res://UI/NotificationPopup.gd<>res://UI/DetailsPanel.gd<>res://UI/EnemyFileMenu.gd<>res://UI/UI Buttons/Minimize.gd<>res://UI/EnemyTree.gd<>res://UI/ItemDetailsPanel.tscn<>uid://ctyhqqwexg434::::res://UI/Settings.tscn<>res://UI/Chat.tscn<>res://UI/Stages.gd<>res://UI/Players.gd<>res://UI/ItemTree.gd<>res://UI/ItemFileMenu.gd<>uid://bbrlwa7er4uqs::::res://resources/icons/brightmixIconset search.png
 ::res://UI/Marker/::1712675187
 EnemyPlacemark.gd::GDScript::-1::1712675187::0::1::::EnemyPlacemark<>GenericPlacemark<>::
 EnemyPlacemark.tscn::PackedScene::-1::1712674999::0::1::::<><>::res://UI/Marker/EnemyPlacemark.gd<>res://UI/Marker/GenericPlacemark.tscn
@@ -493,5 +493,5 @@ GenericSetPlacemark.gd::GDScript::-1::1712675000::0::1::::GenericSetPlacemark<>P
 GenericSetPlacemark.tscn::PackedScene::-1::1712675000::0::1::::<><>::res://UI/Marker/GenericSetPlacemark.gd
 PlayerMarker.gd::GDScript::-1::1712675000::0::1::::PlayerMarker<>GenericMarker<>::
 PlayerMarker.tscn::PackedScene::-1::1712675000::0::1::::<><>::res://puala.png<>res://UI/Marker/PlayerMarker.gd
-::res://UI/UI Buttons/::1712675187
-Minimize.gd::GDScript::-1::1712675187::0::1::::Minimize<>Button<>::
+::res://UI/UI Buttons/::1714066918
+Minimize.gd::GDScript::-1::1714066918::0::1::::Minimize<>Button<>::

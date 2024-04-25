@@ -1,4 +1,4 @@
 res://Main.tscn
-res://Providers/StorageProvider.tscn
-res://Providers/SetProvider.tscn
-res://Providers/DataProvider.tscn
+res://UI/ItemDetailsPanel.gd
+res://UI/EnemyDetailsPanel.gd
+res://UI/UI.tscn

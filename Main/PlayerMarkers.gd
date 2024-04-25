@@ -30,15 +30,3 @@ func _get_player_node(player: PlayerMapEntity) -> PlayerMarker:
 		if n.player.CharacterId == player.CharacterId:
 			return n
 	return null
-
-
-func _on_players_player_joined(player):
-	pass # Replace with function body.
-
-
-func _on_players_player_left(player):
-	pass # Replace with function body.
-
-
-func _on_players_player_updated(player):
-	pass # Replace with function body.

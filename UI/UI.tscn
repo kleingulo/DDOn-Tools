@@ -45,6 +45,7 @@ func _on_Players_item_activated():
 
 func _on_root_markers_loaded():
 	$left/tab/Enemies/FileMenu._on_markers_loaded()
+
 "
 
 [sub_resource type="GDScript" id="3"]
@@ -56,6 +57,18 @@ func _on_SettingsButton_pressed():
 
 [sub_resource type="GDScript" id="1"]
 script/source = "extends PanelContainer
+
+#GD4 migration - anchor_bottom = 0 moves the whole element up so it will overlap with the status_view
+#there is most likely a better solution for this - for example cleaning up the layout - but meh...
+var minimized = false:
+	set(value):
+		if value == true:
+			anchor_bottom = 0.09
+		if value == false:
+			anchor_bottom = 1
+		#otherwise the scrollbar will be visible
+		get_child(0).get_child(1).visible = !value
+		minimized = value
 
 func _ready():
 	visible = false
@@ -71,12 +84,12 @@ func _on_DetailsPanel_showing_details_of(obj):
 script = SubResource("2")
 
 [node name="left" type="PanelContainer" parent="."]
-anchors_preset = 9
+anchors_preset = -1
+anchor_top = 0.05
+anchor_right = 0.25
 anchor_bottom = 1.0
-offset_left = 10.0
-offset_top = 45.0
-offset_right = 320.0
-offset_bottom = -4.0
+offset_right = 0.496002
+grow_horizontal = 2
 
 [node name="tab" type="TabContainer" parent="left"]
 layout_mode = 2
@@ -167,10 +180,8 @@ layout_mode = 2
 [node name="status_view" type="PanelContainer" parent="."]
 anchors_preset = 10
 anchor_right = 1.0
-offset_left = 10.0
-offset_top = 10.0
-offset_right = -10.0
-offset_bottom = 44.0
+offset_bottom = 32.0
+grow_horizontal = 2
 
 [node name="container" type="HBoxContainer" parent="status_view"]
 layout_mode = 2
@@ -184,6 +195,27 @@ property_to_toggle = "visible"
 
 [node name="LayerOptionButton" type="OptionButton" parent="status_view/container"]
 layout_mode = 2
+item_count = 10
+popup/item_0/text = "Layer 0"
+popup/item_0/id = 0
+popup/item_1/text = "Layer 1"
+popup/item_1/id = 1
+popup/item_2/text = "Layer 2"
+popup/item_2/id = 2
+popup/item_3/text = "Layer 3"
+popup/item_3/id = 3
+popup/item_4/text = "Layer 4"
+popup/item_4/id = 4
+popup/item_5/text = "Layer 5"
+popup/item_5/id = 5
+popup/item_6/text = "Layer 6"
+popup/item_6/id = 6
+popup/item_7/text = "Layer 7"
+popup/item_7/id = 7
+popup/item_8/text = "Layer 8"
+popup/item_8/id = 8
+popup/item_9/text = "Layer 9"
+popup/item_9/id = 9
 
 [node name="StageLabel" type="Label" parent="status_view/container"]
 layout_mode = 2
@@ -203,15 +235,16 @@ text = "Settings"
 script = SubResource("3")
 
 [node name="Right Panel" type="PanelContainer" parent="."]
-anchors_preset = 11
-anchor_left = 1.0
+anchors_preset = -1
+anchor_left = 0.55
+anchor_top = 0.05
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -430.0
-offset_top = 45.0
-offset_right = -10.0
-offset_bottom = -4.0
+grow_horizontal = 0
+size_flags_horizontal = 3
+size_flags_vertical = 3
 script = SubResource("1")
+metadata/_edit_use_anchors_ = true
 
 [node name="VBoxContainer" type="VBoxContainer" parent="Right Panel"]
 layout_mode = 2
@@ -232,6 +265,7 @@ layout_mode = 2
 text = "-"
 script = ExtResource("5")
 control_to_minimize = NodePath("../../..")
+property_to_toggle = "minimized"
 
 [node name="Close" type="Button" parent="Right Panel/VBoxContainer/HBoxContainer"]
 layout_mode = 2
@@ -243,24 +277,24 @@ size_flags_vertical = 3
 script = ExtResource("3")
 
 [node name="EnemyDetailsPanel" parent="Right Panel/VBoxContainer/DetailsPanel" instance=ExtResource("1")]
-layout_mode = 0
-anchors_preset = 0
-anchor_right = 0.0
-anchor_bottom = 0.0
+layout_mode = 1
 offset_left = 0.0
 offset_top = 0.0
 offset_right = 0.0
 offset_bottom = 0.0
+grow_horizontal = 2
+grow_vertical = 2
 title_label = NodePath("../../HBoxContainer/TitleLabel")
 
 [node name="ItemDetailsPanel" parent="Right Panel/VBoxContainer/DetailsPanel" instance=ExtResource("7")]
-layout_mode = 0
-anchor_right = 0.0
-anchor_bottom = 0.0
+layout_mode = 1
+anchors_preset = 15
 offset_left = 0.0
 offset_top = 0.0
 offset_right = 0.0
 offset_bottom = 0.0
+grow_horizontal = 2
+grow_vertical = 2
 title_label = NodePath("../../HBoxContainer/TitleLabel")
 
 [node name="NotificationPopup" type="PopupPanel" parent="."]
